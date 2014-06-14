@@ -20,8 +20,11 @@ var randomYCoord = function() {
   return Math.floor(Math.random() * height);
 };
 
+var highScoreSelector = d3.selectAll('.high span');
 var highScore = 0;
+var currentScoreSelector = d3.selectAll('.current span');
 var currentScore = 0;
+var collisionsSelector = d3.selectAll('.collisions span');
 var collisions = 0;
 
 var createPlayer = function() {
@@ -65,35 +68,44 @@ var createEnemies = function() {
   // (no return; result is side effect of data-bound circle nodes visible in canvas)
 };
 
-// create ticking function and listeners by binding svg to "tick"
-  // currentScore++;
-  // // call collide
-  // if( !collide() )
-  // //
-  // // call update scores function
-  //   if( currentScore > highScore ) { highScore = currentScore; }
-  //   currentScore = 0;
-  //   collisions++;
-
-// create function for collision detection
-  // iterate over enemies
-    // collision algorithm
-        // p.top = p.y - p.r
-        // p.bottom = p.y + p.r
-        // p.left = p.x - p.r
-        // p.right = p.x + p.r
-      // Check 4 conditions:
-        // p.top < e.top < p.bottom
-        // p.top < e.bottom < p.bottom
-        // p.left < e.left < p.right
-        // p.left < e.right < p.right
-      // if collision with player, return true
-
-
-
 createPlayer();
 // call createEnemies function
 createEnemies();
+
+
+// call update scores function
+var updateScores = function() {
+  console.log('collide');
+  currentScoreSelector.data([currentScore++]).text(function(d){return d;});
+  console.log(collide);
+  if( !collide() ) {
+    // update scoreboard data
+    // rewrite the below variables to actually reflect the respective span text data
+    // if( currentScore > highScore ) { highScore = currentScore; }
+    // currentScore = 0;
+    // collisions++;
+  }
+};
+// call collide
+// var collide = function() {
+// // create function for collision detection
+//   // assign player node to variable
+//   // assign enemies collection to variable
+//   // iterate over enemies
+//     // collision algorithm
+//         // p.top = p.y - p.r
+//         // p.bottom = p.y + p.r
+//         // p.left = p.x - p.r
+//         // p.right = p.x + p.r
+//       // Check 4 conditions:
+//         // p.top < e.top < p.bottom OR p.top < e.bottom < p.bottom
+//         // AND
+//         // p.left < e.left < p.right OR p.left < e.right < p.right
+//       // if collision with player, return true
+// };
+
+// create interval to check for collisions
+setInterval(updateScores, 10);
 
 // set an interval to move all enemies every second
 setInterval( function () {
