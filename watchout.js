@@ -10,16 +10,6 @@ var svg = d3.select('body').append('svg')
           .attr('height', height)
         .append('g');
 
-// function to generate random x coordinate
-var randomXCoord = function() {
-  return Math.floor(Math.random() * width);
-};
-
-// function to generate random y coordinate
-var randomYCoord = function() {
-  return Math.floor(Math.random() * height);
-};
-
 var highScoreSelector = d3.selectAll('.high span');
 var highScore = 0;
 var currentScoreSelector = d3.selectAll('.current span');
@@ -46,32 +36,45 @@ var createPlayer = function() {
 };
 
 // create function for creating enemies - input data (array of indices)
-var createEnemies = function() {
-  // create data array
-  var data = [];
-  // iterate through range (how many enemies we want)
-  for( var i = 0; i < 1; i++ ){
-    // push array item
-    data.push(i);
-  }
+var createEnemies = function(numEnemies) {
+  var randomCoords = function(){
+    // create data array of enemies with random coordinates
+    var data = [];
+    for (var i = 0; i < numEnemies; i ++) {
+      var x = Math.floor(Math.random() * width);
+      var y = Math.floor(Math.random() * height);
+      data.push({'x': x, 'y': y});
+    }
+    return data;
+  };
+
   // create variable to refer to selection of all circles in svg
   svg.selectAll('.enemy')
   // bind data to circles collection
-     .data(data)
+     .data(randomCoords())
   // select empty nodes among circles, append circle svg to each node
      .enter().append('circle')
   // set coordinates per node
-     .attr('cx', randomXCoord)
-     .attr('cy', randomYCoord)
+     .attr('cx', function(d) {return d.x;})
+     .attr('cy', function(d) {return d.y;})
      .attr('r', 6)
      .attr('class', 'enemy');
   // (no return; result is side effect of data-bound circle nodes visible in canvas)
+  // set an interval to move all enemies every second
+  setInterval( function () {
+    // select all circles in svg
+    svg.selectAll('.enemy')
+    // move each circle to its new coordinate
+       .data(randomCoords())
+       .transition().duration(1000)
+       .attr('cx', function(d) {return d.x;})
+       .attr('cy', function(d) {return d.y;});
+  }, 1000);
 };
 
 createPlayer();
-// call createEnemies function
-createEnemies();
-
+// call createEnemies function on any number of enemies
+createEnemies(25);
 
 // call update scores function
 var updateScores = function() {
@@ -87,32 +90,25 @@ var updateScores = function() {
   }
 };
 // call collide
-// var collide = function() {
-// // create function for collision detection
-//   // assign player node to variable
-//   // assign enemies collection to variable
-//   // iterate over enemies
-//     // collision algorithm
-//         // p.top = p.y - p.r
-//         // p.bottom = p.y + p.r
-//         // p.left = p.x - p.r
-//         // p.right = p.x + p.r
-//       // Check 4 conditions:
-//         // p.top < e.top < p.bottom OR p.top < e.bottom < p.bottom
-//         // AND
-//         // p.left < e.left < p.right OR p.left < e.right < p.right
-//       // if collision with player, return true
-// };
+var collide = function() {
+// create function for collision detection
+  // assign player node to variable
+  // assign enemies collection to variable
+  // iterate over enemies
+    // collission algorithm for circles
+      // check conditions:
+      // Math.sqrt((p.x - e.x)^2 + (p.y - e.y)^2) < (p.r + e.r)
+    // collision algorithm for squares
+        // p.top = p.y - p.r
+        // p.bottom = p.y + p.r
+        // p.left = p.x - p.r
+        // p.right = p.x + p.r
+      // Check 4 conditions:
+        // p.top < e.top < p.bottom OR p.top < e.bottom < p.bottom
+        // AND
+        // p.left < e.left < p.right OR p.left < e.right < p.right
+      // if collision with player, return true
+};
 
 // create interval to check for collisions
 setInterval(updateScores, 10);
-
-// set an interval to move all enemies every second
-setInterval( function () {
-  // select all circles in svg
-  svg.selectAll('.enemy')
-  // move each circle to its new coordinate
-     .transition().duration(1000)
-     .attr('cx', randomXCoord)
-     .attr('cy', randomYCoord);
-}, 1000);
