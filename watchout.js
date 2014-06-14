@@ -20,6 +20,10 @@ var randomYCoord = function() {
   return Math.floor(Math.random() * height);
 };
 
+var highScore = 0;
+var currentScore = 0;
+var collisions = 0;
+
 var createPlayer = function() {
   var drag = d3.behavior.drag()
       .on('drag', function(d) {
@@ -43,7 +47,7 @@ var createEnemies = function() {
   // create data array
   var data = [];
   // iterate through range (how many enemies we want)
-  for( var i = 0; i < 100; i++ ){
+  for( var i = 0; i < 1; i++ ){
     // push array item
     data.push(i);
   }
@@ -56,10 +60,36 @@ var createEnemies = function() {
   // set coordinates per node
      .attr('cx', randomXCoord)
      .attr('cy', randomYCoord)
-     .attr('r', 4)
+     .attr('r', 6)
      .attr('class', 'enemy');
   // (no return; result is side effect of data-bound circle nodes visible in canvas)
 };
+
+// create ticking function and listeners by binding svg to "tick"
+  // currentScore++;
+  // // call collide
+  // if( !collide() )
+  // //
+  // // call update scores function
+  //   if( currentScore > highScore ) { highScore = currentScore; }
+  //   currentScore = 0;
+  //   collisions++;
+
+// create function for collision detection
+  // iterate over enemies
+    // collision algorithm
+        // p.top = p.y - p.r
+        // p.bottom = p.y + p.r
+        // p.left = p.x - p.r
+        // p.right = p.x + p.r
+      // Check 4 conditions:
+        // p.top < e.top < p.bottom
+        // p.top < e.bottom < p.bottom
+        // p.left < e.left < p.right
+        // p.left < e.right < p.right
+      // if collision with player, return true
+
+
 
 createPlayer();
 // call createEnemies function
@@ -70,8 +100,7 @@ setInterval( function () {
   // select all circles in svg
   svg.selectAll('.enemy')
   // move each circle to its new coordinate
-     .transition()
+     .transition().duration(1000)
      .attr('cx', randomXCoord)
-     .attr('cy', randomYCoord)
-     .attr('r', 4);
+     .attr('cy', randomYCoord);
 }, 1000);
