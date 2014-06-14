@@ -44,3 +44,14 @@ var createEnemies = function(data) {
 
 // call createEnemies function
 createEnemies(data);
+
+// set an interval to move all enemies every second
+setInterval( function () {
+  // select all circles in svg
+  svg.selectAll('circle')
+  // move each circle to its new coordinate
+     .transition()
+     .attr('cx', randomXCoord)
+     .attr('cy', randomYCoord)
+     .attr('r', 4);
+}, 1000);
